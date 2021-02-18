@@ -1,4 +1,4 @@
-# 1 "main.c"
+# 1 "delay.c"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 288 "<built-in>" 3
@@ -6,7 +6,7 @@
 # 1 "<built-in>" 2
 # 1 "C:\\Program Files (x86)\\Microchip\\xc8\\v2.00\\pic\\include\\language_support.h" 1 3
 # 2 "<built-in>" 2
-# 1 "main.c" 2
+# 1 "delay.c" 2
 
 
 
@@ -2499,7 +2499,7 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 27 "C:\\Program Files (x86)\\Microchip\\xc8\\v2.00\\pic\\include\\xc.h" 2 3
-# 9 "main.c" 2
+# 9 "delay.c" 2
 
 # 1 "./config.h" 1
 
@@ -2520,81 +2520,20 @@ extern __bank0 __bit __timeout;
 
 #pragma config BOR4V = BOR40V
 #pragma config WRT = OFF
-# 10 "main.c" 2
-
-# 1 "./botoes.h" 1
-
-
-
-void botao_init (void);
-int s1 (void);
-int s0 (void);
-# 11 "main.c" 2
-
-# 1 "./contatores.h" 1
-
-
-
-void contatores_init( void );
-void k1 (int estado);
-void k2 (int estado);
-void k3 (int estado);
-# 12 "main.c" 2
+# 10 "delay.c" 2
 
 # 1 "./delay.h" 1
 
 
 
 void delay ( unsigned int t );
-# 13 "main.c" 2
+# 11 "delay.c" 2
 
-
-void main(void)
-{
-    int estado = 0;
-    int t;
-    while( 1 )
-     {
-        switch( estado )
-         {
-            case 0:
-                    estado = 1;
-                     break;
-            case 1:
-
-                    contatores_init();
-                    botao_init();
-                    estado = 2;
-                     break;
-
-            case 2:
-                    if( s1() == 1 )
-                    estado = 3;
-                     break;
-            case 3:
-                    k1( 1 );
-                    k2( 1 );
-                    k3( 0 );
-                    estado = 4;
-                     break;
-            case 4:
-                   t = 2000;
-                    estado = 5;
-                     break;
-            case 5:
-                    delay(1);
-                    --t;
-                    if( t <= 0)
-                    estado = 6;
-                     break;
-            case 6:
-
-                    k1 ( 1 );
-                    k2 ( 0 );
-                    k3 ( 1 );
-                    estado = 7;
-                     break ;
-
-         }
-      }
-}
+ void delay( unsigned t )
+ {
+    while( t )
+    {
+        --t;
+        _delay((unsigned long)((1)*(4000000/4000.0)));
+    }
+ }

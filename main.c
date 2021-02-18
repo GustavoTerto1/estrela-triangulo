@@ -8,83 +8,57 @@
 
 #include <xc.h>
 #include "config.h"
-
-void contatores_init( void )
-{
-    TRISDbits.TRISD5 = 0;
-    TRISDbits.TRISD6 = 0;
-    TRISDbits.TRISD7 = 0;
-
-    PORTDbits.RD5 = 0;
-    PORTDbits.RD6 = 0;
-    PORTDbits.RD7 = 0;
-}
-void k1 (int estado)
-{
-  PORTDbits.RD7 = estado;
-}  
-
-void k2 (int estado) 
-{
-  PORTDbits.RD6 = estado;
-}
-
-void k3 (int estado) 
-{
-   PORTDbits.RD5 = estado;
-}
-void botao_init (void)
-{
-   TRISDbits.TRISD0 = 1;
-   TRISDbits.TRISD1 = 1;
-}
-
-
-void delay( int t )
-{ 
-    while( t )
-    {
-        --t;
-        __delay_ms(1);
-    }     
-}        
-int s1 (void)
-{
-    return (PORTDbits.RD1);
-}
-
-int s0 (void)
-{
-    return (PORTDbits.RD0);
-}
-
-int lerk1 (void)
-{
-    return (PORTDbits.RD7);
-}
+#include "botoes.h"
+#include "contatores.h"
+#include "delay.h"
 
 void main(void)
 {
-    contatores_init();
-    botao_init();
-
-    while ( 1 )
-    {
-        if ( s1() == 1 && lerk1() == 0 )
-        {
-            k1( 1 );
-            k2( 1 );
-            delay(1000);
-            k2( 0 );
-            k3( 1 );
-        }
-        if (s0() == 1 )
-        { 
-            k1 ( 0 );
-            k2 ( 0 );    
-            k3 ( 0 );   
-        }
-    }
+    int estado = 0;
+    int t; 
+    while( 1 )
+     {
+        switch( estado )
+         {
+            case 0:
+                    estado = 1;
+                     break;
+            case 1:
+                
+                    contatores_init();
+                    botao_init();
+                    estado = 2;
+                     break;
+                    
+            case 2:        
+                    if( s1() == 1 )
+                    estado = 3;
+                     break;    
+            case 3:         
+                    k1( 1 );
+                    k2( 1 );
+                    k3( 0 );
+                    estado = 4;
+                     break;
+            case 4:         
+                   t = 2000;
+                    estado = 5;
+                     break;
+            case 5:
+                    delay(1);
+                    --t;
+                    if( t <= 0)
+                    estado = 6;
+                     break;
+            case 6:
+                
+                    k1 ( 1 );
+                    k2 ( 0 );    
+                    k3 ( 1 );  
+                    estado = 7;
+                     break ;
+                            
+         }
+      }
 }
-
 

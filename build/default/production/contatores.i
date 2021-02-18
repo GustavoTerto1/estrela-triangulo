@@ -1,4 +1,4 @@
-# 1 "main.c"
+# 1 "contatores.c"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 288 "<built-in>" 3
@@ -6,7 +6,7 @@
 # 1 "<built-in>" 2
 # 1 "C:\\Program Files (x86)\\Microchip\\xc8\\v2.00\\pic\\include\\language_support.h" 1 3
 # 2 "<built-in>" 2
-# 1 "main.c" 2
+# 1 "contatores.c" 2
 
 
 
@@ -2499,102 +2499,30 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 27 "C:\\Program Files (x86)\\Microchip\\xc8\\v2.00\\pic\\include\\xc.h" 2 3
-# 9 "main.c" 2
-
-# 1 "./config.h" 1
+# 9 "contatores.c" 2
 
 
-
-
-#pragma config FOSC = INTRC_NOCLKOUT
-#pragma config WDTE = OFF
-#pragma config PWRTE = OFF
-#pragma config MCLRE = OFF
-#pragma config CP = OFF
-#pragma config CPD = OFF
-#pragma config BOREN = OFF
-#pragma config IESO = OFF
-#pragma config FCMEN = OFF
-#pragma config LVP = OFF
-
-
-#pragma config BOR4V = BOR40V
-#pragma config WRT = OFF
-# 10 "main.c" 2
-
-# 1 "./botoes.h" 1
-
-
-
-void botao_init (void);
-int s1 (void);
-int s0 (void);
-# 11 "main.c" 2
-
-# 1 "./contatores.h" 1
-
-
-
-void contatores_init( void );
-void k1 (int estado);
-void k2 (int estado);
-void k3 (int estado);
-# 12 "main.c" 2
-
-# 1 "./delay.h" 1
-
-
-
-void delay ( unsigned int t );
-# 13 "main.c" 2
-
-
-void main(void)
+ void contatores_init( void )
 {
-    int estado = 0;
-    int t;
-    while( 1 )
-     {
-        switch( estado )
-         {
-            case 0:
-                    estado = 1;
-                     break;
-            case 1:
+    TRISDbits.TRISD5 = 0;
+    TRISDbits.TRISD6 = 0;
+    TRISDbits.TRISD7 = 0;
 
-                    contatores_init();
-                    botao_init();
-                    estado = 2;
-                     break;
+    PORTDbits.RD5 = 0;
+    PORTDbits.RD6 = 0;
+    PORTDbits.RD7 = 0;
+}
+void k1 (int estado)
+{
+  PORTDbits.RD7 = estado;
+}
 
-            case 2:
-                    if( s1() == 1 )
-                    estado = 3;
-                     break;
-            case 3:
-                    k1( 1 );
-                    k2( 1 );
-                    k3( 0 );
-                    estado = 4;
-                     break;
-            case 4:
-                   t = 2000;
-                    estado = 5;
-                     break;
-            case 5:
-                    delay(1);
-                    --t;
-                    if( t <= 0)
-                    estado = 6;
-                     break;
-            case 6:
+void k2 (int estado)
+{
+  PORTDbits.RD6 = estado;
+}
 
-                    k1 ( 1 );
-                    k2 ( 0 );
-                    k3 ( 1 );
-                    estado = 7;
-                     break ;
-
-         }
-      }
+void k3 (int estado)
+{
+  PORTDbits.RD5 = estado;
 }
